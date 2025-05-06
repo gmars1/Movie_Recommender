@@ -1,13 +1,40 @@
 version: '3.8'
 
 services:
-  postgres:
+  movie_db:
     image: postgres:17-alpine
     container_name: movie_db
     environment:
-      POSTGRES_USER: ${DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
-      POSTGRES_DB: ${DB_NAME:-movie_db}
+      POSTGRES_USER: ${DB_FILMS_USER}
+      POSTGRES_PASSWORD: ${DB_FILMS_PASSWORD}
+      POSTGRES_DB: ${DB_FILMS_NAME}
     ports:
-      - "5430:5432"
+      - "${DB_FILMS_HOST_MACHINE_PORT}:${DB_FILMS_INSIDE_CONTAINER_PORT}"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    networks:
+      - film_network
+
+  movie_db_migrator:
+    build: ./FilmsDatabase/
+    environment:
+      DB_FILMS_USER: ${DB_FILMS_USER}
+      DB_FILMS_PASSWORD: ${DB_FILMS_PASSWORD}
+      DB_FILMS_NAME: ${DB_FILMS_NAME}
+      DB_FILMS_HOST: movie_db
+      DB_FILMS_PORT: ${DB_FILMS_INSIDE_CONTAINER_PORT}
+      TARGET_MIGRATION: ${TARGET_MIGRATION:-head}  # Pass specific revision if needed
+    depends_on:
+      movie_db:
+        condition: service_healthy
+    networks:
+      - film_network
+
+networks:
+  film_network:
+    driver: bridge
 
