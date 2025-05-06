@@ -6,7 +6,7 @@ from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, declared_attr, Mapped, mapped_column
 
-from FilmsDatabase.config import settings
+from FilmsDatabase.db.config import settings
 
 DATABASE_URL = settings.get_db_url()
 

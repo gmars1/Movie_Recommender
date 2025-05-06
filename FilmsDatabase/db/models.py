@@ -5,7 +5,7 @@ from sqlalchemy import UUID as SQL_UUID, ForeignKey, String, Numeric, Table
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.schema import Column
 
-from FilmsDatabase.database import Base
+from FilmsDatabase.db.database import Base
 
 
 class Movie(Base):
