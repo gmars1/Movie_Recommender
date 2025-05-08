@@ -1,4 +1,0 @@
-services:
-  movie_db_migrator:
-    volumes:
-      - ./FilmsDatabase:/app/FilmsDatabaseHost
