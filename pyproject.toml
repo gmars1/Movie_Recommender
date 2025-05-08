@@ -3,15 +3,13 @@ requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "film_project"  # Общее имя всего проекта
+name = "your-package-name"
 version = "0.1.0"
-packages = ["FilmsDatabase", "Movie_Rec (1.1)"]  # Явное указание всех пакетов
-
-[project.optional-dependencies]
-dev = ["pytest", "black", "flake8"]
-
-# Общие зависимости для всех пакетов
 dependencies = [
-    "sqlalchemy>=1.4",
-    "psycopg2-binary>=2.9"
+    "sqlalchemy>=2.0",
+    "pandas>=2.0",
+    "openpyxl>=3.0"
 ]
+
+[tool.setuptools]
+packages = ["backend", "FilmsDatabase"]

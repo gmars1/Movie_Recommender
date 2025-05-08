@@ -1,9 +1,9 @@
-import aiohttp
 import asyncio
-from bs4 import BeautifulSoup
-import pandas as pd
 import json
-import time
+
+import aiohttp
+import pandas as pd
+from bs4 import BeautifulSoup
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
@@ -12,7 +12,7 @@ HEADERS = {
 
 MAX_MOVIES = 250
 CONCURRENT_REQUESTS = 5  # Ограничиваем количество одновременных запросов
-REQUEST_DELAY = 0.2       # Задержка перед каждым запросом (в секундах)
+REQUEST_DELAY = 0.2  # Задержка перед каждым запросом (в секундах)
 
 semaphore = asyncio.Semaphore(CONCURRENT_REQUESTS)
 
@@ -50,7 +50,7 @@ async def fetch_movie_data(session, idx, item):
     print(f"Обрабатываем фильм {idx}: {item.get('alternateName', '')} - {movie_url}")
 
     actors = await get_actors(session, movie_url)
-    print(f"Найденные актеры: {actors}\n")
+    print(f"{idx} Найденные актеры: {actors}\n")
 
     return {
         'Название (русское)': item.get('alternateName', ''),
