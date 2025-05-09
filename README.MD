@@ -5,4 +5,4 @@ docker-compose:
 
 (по умолчанию TARGET_MIGRATION = head)
 
-3. заполнить базу данными
+3. movie_db_seed - заполнение базы данными

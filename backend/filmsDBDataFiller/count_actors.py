@@ -1,10 +1,12 @@
-import pandas as pd
 from collections import Counter
+
+import pandas as pd
+
 
 def analyze_actors_frequency(filename='top_250.xlsx', column='Актеры', top_n=20):
     # Читаем Excel
     df = pd.read_excel(filename)
-    
+
     # Проверяем, что столбец есть
     if column not in df.columns:
         print(f"Столбец '{column}' не найден в файле.")

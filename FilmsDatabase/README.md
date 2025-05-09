@@ -13,7 +13,7 @@ alembic -c FilmsDatabase/alembic.ini revision --autogenerate -m "message"
 
 ```commandline
 cd FilmsDatabase
-alembic init -t async migration
+alembic init migration
 ```
 
 2. указываем настройки в `FilmsDatabase/migration/env.py`:

@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: ${DB_FILMS_PASSWORD}
       POSTGRES_DB: ${DB_FILMS_NAME}
     ports:
-      - "${DB_FILMS_HOST_MACHINE_PORT}:${DB_FILMS_INSIDE_CONTAINER_PORT}"
+      - "${DB_FILMS_PORT}:${DB_FILMS_CONTAINER_PORT}"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
       interval: 10s
@@ -20,19 +20,38 @@ services:
       - film_network
 
   movie_db_migrator:
-    build: ./FilmsDatabase/
+    build:
+      context: .
+      dockerfile: ./FilmsDatabase/Dockerfile
     environment:
       DB_FILMS_USER: ${DB_FILMS_USER}
       DB_FILMS_PASSWORD: ${DB_FILMS_PASSWORD}
       DB_FILMS_NAME: ${DB_FILMS_NAME}
       DB_FILMS_HOST: movie_db
-      DB_FILMS_PORT: ${DB_FILMS_INSIDE_CONTAINER_PORT}
+      DB_FILMS_PORT: ${DB_FILMS_CONTAINER_PORT}
       TARGET_MIGRATION: ${TARGET_MIGRATION:-head}  # Pass specific revision if needed
     depends_on:
       movie_db:
         condition: service_healthy
     networks:
       - film_network
+
+  movie_db_seed:
+    build:
+      context: .
+      dockerfile: ./backend/filmsDBDataFiller/Dockerfile
+    environment:
+      DB_FILMS_USER: ${DB_FILMS_USER}
+      DB_FILMS_PASSWORD: ${DB_FILMS_PASSWORD}
+      DB_FILMS_NAME: ${DB_FILMS_NAME}
+      DB_FILMS_HOST: movie_db
+      DB_FILMS_PORT: ${DB_FILMS_CONTAINER_PORT}
+    depends_on:
+      - movie_db_migrator
+    networks:
+      - film_network
+
+
 
 networks:
   film_network:

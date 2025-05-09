@@ -1,0 +1,9 @@
+services:
+  movie_db_migrator:
+    volumes:
+      - ./FilmsDatabase:/app/FilmsDatabaseHost #todo make editable
+    tty: true        # Allocate a pseudo-TTY
+  movie_db_seed:
+    volumes:
+      - ./:/app/host
+    tty: true        # Allocate a pseudo-TTY
