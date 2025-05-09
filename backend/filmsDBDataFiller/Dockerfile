@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 
-WORKDIR /workdir
+WORKDIR /app
 
 # Install system + Python deps
 RUN apt-get update && \
@@ -17,3 +17,5 @@ RUN pip install --no-cache-dir -r FilmsDatabase/requirements.txt
 
 CMD ["python", "backend/filmsDBDataFiller/main_import.py"]
 CMD ["python", "backend/filmsDBDataFiller/db_film_filler.py"]
+
+

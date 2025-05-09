@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 
-WORKDIR /workdir
+WORKDIR /app
 
 # Install system + Python deps
 RUN apt-get update && \
