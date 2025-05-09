@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     )
 
     def get_db_url(self):
-        return (f"postgresql+asyncpg://{self.DB_FILMS_USER}:{self.DB_FILMS_PASSWORD}@"
+        return (f"postgresql://{self.DB_FILMS_USER}:{self.DB_FILMS_PASSWORD}@"
                 f"{self.DB_FILMS_HOST}:{self.DB_FILMS_PORT}/{self.DB_FILMS_NAME}")
 
 
