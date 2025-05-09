@@ -20,7 +20,9 @@ services:
       - film_network
 
   movie_db_migrator:
-    build: ./FilmsDatabase/
+    build:
+      context: .
+      dockerfile: ./FilmsDatabase/Dockerfile
     environment:
       DB_FILMS_USER: ${DB_FILMS_USER}
       DB_FILMS_PASSWORD: ${DB_FILMS_PASSWORD}
@@ -33,6 +35,7 @@ services:
         condition: service_healthy
     networks:
       - film_network
+
 
 networks:
   film_network:
