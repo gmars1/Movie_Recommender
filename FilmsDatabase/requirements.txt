@@ -1,0 +1,5 @@
+alembic==1.13.3  # (works with both sync and async)
+sqlalchemy==2.0.35  # (works with both sync and async)
+pydantic==2.9.2  # (same)
+pydantic-settings==2.5.2  # (same)
+psycopg2==2.9.9  # (synchronous PostgreSQL adapter instead of asyncpg)
