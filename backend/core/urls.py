@@ -19,5 +19,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')), # Встроенные URL для аутентификации
     path('', include('films.urls')),
+    # path('signup/', views.signup, name='signup'), # URL для регистрации
 ]

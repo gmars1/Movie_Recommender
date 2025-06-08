@@ -1,0 +1,29 @@
+{% extends "base_generic.html" %}
+
+{% block title %}{{ movie.title_ru }}{% endblock %}
+
+{% block content %}
+  <h1>{{ movie.title_ru }}</h1>
+
+  <p><strong>Рейтинг:</strong> {% if movie.rating %}{{ movie.rating.rating }}{% else %}N/A{% endif %}</p>
+
+  <p><strong>Жанры:</strong>
+    {% for genre in movie.genres.all %}
+      {{ genre.genre_name }}{% if not forloop.last %}, {% endif %}
+    {% empty %}
+      Нет информации о жанрах
+    {% endfor %}
+  </p>
+
+  <p><strong>Актеры:</strong>
+    {% for actor in movie.actors.all %}
+      {{ actor.full_name }}{% if not forloop.last %}, {% endif %}
+    {% empty %}
+      Нет информации об актерах
+    {% endfor %}
+  </p>
+
+  <p><strong>Дата добавления в базу:</strong> {{ movie.created_at|date:"d.m.Y H:i" }}</p>
+
+  <a href="{% url 'movie_list' %}">Назад к списку фильмов</a>
+{% endblock %}

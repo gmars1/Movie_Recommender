@@ -1,0 +1,44 @@
+
+{% extends "base_generic.html" %}
+
+{% block title %}Список фильмов{% endblock %}
+
+{% block content %}
+     <h1>Список фильмов</h1>
+     <ul>
+         {% for movie in page_obj %}
+           <li>
+               <a href="{% url 'movie_detail' movie.id %}">{{ movie.title_ru }}</a>
+               - Рейтинг: {% if movie.rating %}{{ movie.rating.rating }}{% else %}N/A{% endif %}
+               <br>
+               Жанры:
+               {% for genre in movie.genres.all %}
+                   {{ genre.genre_name }}{% if not forloop.last %}, {% endif %}
+               {% empty %}
+                   Нет жанров
+               {% endfor %}
+           </li>
+           <br>
+         {% empty %}
+             <li>Нет фильмов</li>
+         {% endfor %}
+     </ul>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; первая</a>
+                <a href="?page={{ page_obj.previous_page_number }}">предыдущая</a>
+            {% endif %}
+
+            <span class="current-page">
+                Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">следующая</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+{% endblock %}
