@@ -1,5 +1,8 @@
 import uuid
 from django.db import models
+from django.db.models import Avg # Импортируем Avg
+from django.contrib.auth.models import User # Импортируем стандартную модель User
+
 
 
 class Movie(models.Model):
@@ -17,6 +20,13 @@ class Movie(models.Model):
 
     def __str__(self):
         return self.title_ru
+
+    def average_user_rating(self):
+        # Рассчитываем среднюю оценку на основе UserMovieRating
+        # self.usermovierating_set - это обратная связь от UserMovieRating к Movie
+        avg_rating = self.usermovierating_set.aggregate(Avg('rating'))['rating__avg']
+        return round(avg_rating, 1) if avg_rating is not None else None
+
 
 
 class MovieRating(models.Model):
@@ -73,3 +83,18 @@ class MovieActor(models.Model):
     class Meta:
         db_table = 'movie_actors' # Существующая таблица
         unique_together = (('movie', 'actor'),) # Отражает уникальность пары
+
+class UserMovieRating(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, verbose_name="Фильм")
+    rating = models.PositiveSmallIntegerField(verbose_name="Оценка", help_text="Оценка от 1 до 10")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+
+    class Meta:
+        db_table = 'user_movie_rating'
+        unique_together = ('user', 'movie') # Пользователь может оценить фильм только один раз
+
+    def __str__(self):
+        return f"{self.user.username} - {self.movie.title_ru}: {self.rating}"

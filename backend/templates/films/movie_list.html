@@ -9,7 +9,8 @@
          {% for movie in page_obj %}
            <li>
                <a href="{% url 'movie_detail' movie.id %}">{{ movie.title_ru }}</a>
-               - Рейтинг: {% if movie.rating %}{{ movie.rating.rating }}{% else %}N/A{% endif %}
+               - Рейтинг (IMDb): {% if movie.rating %}{{ movie.rating.rating }}{% else %}N/A{% endif %}<br>
+               - Средняя оценка: {% if movie.avg_rating_calc %}{{ movie.avg_rating_calc }}/10{% else %}N/A{% endif %}
                <br>
                Жанры:
                {% for genre in movie.genres.all %}

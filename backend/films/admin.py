@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Movie, MovieRating, Genre, Actor, MovieGenre, MovieActor
+from .models import Movie, MovieRating, Genre, Actor, MovieGenre, MovieActor, UserMovieRating
 
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
@@ -26,3 +26,9 @@ class ActorAdmin(admin.ModelAdmin):
 # но обычно это не требуется, если они используются только как 'through' модели для ManyToMany.
 # admin.site.register(MovieGenre)
 # admin.site.register(MovieActor)
+
+@admin.register(UserMovieRating)
+class UserMovieRatingAdmin(admin.ModelAdmin):
+    list_display = ('user', 'movie', 'rating', 'created_at', 'updated_at')
+    list_filter = ('rating', 'user', 'movie')
+    search_fields = ('user__username', 'movie__title_ru')
