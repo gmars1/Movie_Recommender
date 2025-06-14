@@ -25,12 +25,6 @@ class Base(DeclarativeBase):
         default=uuid4,
         server_default=text("gen_random_uuid()")  # For PostgreSQL
     )
-<<<<<<< HEAD
-    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
-    updated_at: Mapped[datetime] = mapped_column(
-        server_default=func.now(),
-        onupdate=func.now()
-=======
     created_at: Mapped[datetime] = mapped_column(
         server_default=func.now(), 
         nullable=True  # Разрешаем NULL
@@ -39,7 +33,6 @@ class Base(DeclarativeBase):
         server_default=func.now(),
         onupdate=func.now(),
         nullable=True  # Разрешаем NULL
->>>>>>> dev
     )
 
     @declared_attr.directive

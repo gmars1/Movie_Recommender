@@ -1,0 +1,76 @@
+{% extends "base_generic.html" %}
+
+{% block title %}{{ movie.title_ru }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="mb-3">{{ movie.title_ru }}</h1>
+            
+            <p><strong>Рейтинг (IMDb):</strong> {% if movie.rating %}{{ movie.rating.rating }}{% else %}N/A{% endif %}</p>
+            <p><strong>Средняя оценка пользователей:</strong> {% with avg_user_rating=movie.average_user_rating %}{% if avg_user_rating %}{{ avg_user_rating|floatformat:1 }}/10{% else %}Еще нет оценок{% endif %}{% endwith %}</p>
+            
+            <div class="mb-3">
+                <strong>Жанры:</strong>
+                {% for genre in movie.genres.all %}
+                    <span class="badge bg-info me-1">{{ genre.genre_name }}</span>
+                {% empty %}
+                    <span class="text-muted">Нет информации о жанрах</span>
+                {% endfor %}
+            </div>
+            
+            <p><strong>Актеры:</strong>
+                {% for actor in movie.actors.all %}
+                    {{ actor.full_name }}{% if not forloop.last %}, {% endif %}
+                {% empty %}
+                    <span class="text-muted">Нет информации об актерах</span>
+                {% endfor %}
+            </p>
+            
+            <p><small class="text-muted">Дата добавления в базу: {{ movie.created_at|date:"d.m.Y H:i" }}</small></p>
+        </div>
+        <div class="col-md-4">
+            {# Здесь можно разместить постер фильма, если он есть #}
+            {# <img src="{{ movie.poster_url_placeholder }}" alt="{{ movie.title_ru }}" class="img-fluid rounded mb-3"> #}
+            <div class="p-3 rounded" style="background-color: #1e1e1e; border: 1px solid #2d2d2d;">
+                <h4>Ваша оценка</h4>
+                {% if user.is_authenticated %}
+                    <p class="mb-2">Текущая: {% if user_rating %}<span class="fw-bold">{{ user_rating }}/10</span>{% else %}Вы еще не оценили этот фильм{% endif %}</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ rate_form.as_p }}
+                        <button type="submit" class="btn btn-primary-custom btn-sm mt-2">Оценить</button>
+                    </form>
+                {% else %}
+                    <p><a href="{% url 'login' %}?next={{ request.path }}" class="link-light">Войдите</a>, чтобы оценить фильм.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    {% if similar_movies %}
+    <div class="mt-4">
+        <h3>Похожие фильмы:</h3>
+        <div class="list-group">
+            {% for sim_movie in similar_movies %}
+            <a href="{% url 'movie_detail' sim_movie.id %}" class="list-group-item list-group-item-action" style="background-color: #2a2a2a; border-color: #383838; color: #c0c0c0;">
+                {{ sim_movie.title_ru }}
+                {% if sim_movie.rating %}
+                    <small class="text-muted float-end">IMDb: {{ sim_movie.rating.rating }}</small>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+        <p class="mt-4 text-muted">Похожие фильмы не найдены.</p>
+    {% endif %}
+
+    <hr class="my-4">
+    
+    <a href="{% url 'movie_list' %}" class="btn btn-outline-secondary mb-3">&laquo; Назад к списку фильмов</a>
+</div>
+{% endblock %}

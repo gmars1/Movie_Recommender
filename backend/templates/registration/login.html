@@ -1,0 +1,52 @@
+{% extends "base_generic.html" %} <!-- Предполагаем, что будет базовый шаблон -->
+
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="p-4 rounded" style="background-color: #1e1e1e; border: 1px solid #2d2d2d;">
+        <h2 class="text-center mb-4">Вход</h2>
+        {% if form.errors %}
+          <div class="alert alert-danger" role="alert">
+            Ваше имя пользователя и пароль не совпали. Пожалуйста, попробуйте еще раз.
+          </div>
+        {% endif %}
+
+        {% if next %}
+          {% if user.is_authenticated %}
+            <div class="alert alert-warning" role="alert">
+              У вас нет доступа к этой странице. Чтобы продолжить, пожалуйста, войдите с учетной записью, имеющей доступ.
+            </div>
+          {% else %}
+            <div class="alert alert-info" role="alert">
+              Пожалуйста, войдите, чтобы увидеть эту страницу.
+            </div>
+          {% endif %}
+        {% endif %}
+
+        <form method="post" action="{% url 'login' %}">
+          {% csrf_token %}
+          {{ form.username.label_tag }}
+          {{ form.username }}
+          {% if form.username.errors %}
+            <div class="text-danger"><small>{{ form.username.errors|join:", " }}</small></div>
+          {% endif %}
+
+          {{ form.password.label_tag }}
+          {{ form.password }}
+          {% if form.password.errors %}
+            <div class="text-danger"><small>{{ form.password.errors|join:", " }}</small></div>
+          {% endif %}
+          
+          <button type="submit" class="btn btn-primary-custom w-100 mt-3">Войти</button>
+          <input type="hidden" name="next" value="{{ next }}">
+        </form>
+        <p class="mt-3 text-center"><a href="{% url 'signup' %}" class="link-light">Зарегистрироваться</a></p>
+        {# <p class="mt-2 text-center"><a href="{% url 'password_reset' %}" class="link-light">Забыли пароль?</a></p> #}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

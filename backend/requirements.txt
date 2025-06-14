@@ -1,0 +1,4 @@
+Django~=5.2
+psycopg2-binary>=2.8 # Для PostgreSQL
+# python-dotenv  # Если будешь использовать .env для настроек Django
+# Другие зависимости, специфичные для Django, если появятся

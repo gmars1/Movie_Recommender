@@ -10,7 +10,7 @@ HEADERS = {
     "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7"
 }
 
-MAX_MOVIES = 250
+MAX_MOVIES = 50 # Изменяем на 50 для тестирования
 CONCURRENT_REQUESTS = 5  # Ограничиваем количество одновременных запросов
 REQUEST_DELAY = 0.2  # Задержка перед каждым запросом (в секундах)
 

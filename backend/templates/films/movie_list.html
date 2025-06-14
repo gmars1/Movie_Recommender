@@ -1,0 +1,64 @@
+
+{% extends "base_generic.html" %}
+
+{% block title %}Список фильмов{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Список фильмов</h1>
+
+    {% if page_obj %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for movie in page_obj %}
+        <div class="col">
+            <div class="card h-100 shadow-sm" style="background-color: #1e1e1e; border-color: #2d2d2d;">
+                {# Здесь можно добавить постер фильма, если он есть в модели #}
+                {# <img src="{{ movie.poster_url_placeholder }}" class="card-img-top" alt="{{ movie.title_ru }}"> #}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title" style="color: #e0e0e0;">
+                        <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none" style="color: #03dac6;">{{ movie.title_ru }}</a>
+                    </h5>
+                    <p class="card-text mb-1"><small class="text-muted">Рейтинг (IMDb): {% if movie.rating %}{{ movie.rating.rating }}{% else %}N/A{% endif %}</small></p>
+                    <p class="card-text mb-2"><small class="text-muted">Средняя оценка: {% if movie.avg_rating_calc %}{{ movie.avg_rating_calc|floatformat:1 }}/10{% else %}N/A{% endif %}</small></p>
+                    <div class="mb-2">
+                        <small class="text-muted">Жанры:
+                            {% for genre in movie.genres.all %}
+                                <span class="badge bg-secondary me-1">{{ genre.genre_name }}</span>
+                            {% empty %}
+                                Нет жанров
+                            {% endfor %}
+                        </small>
+                    </div>
+                    <a href="{% url 'movie_detail' movie.id %}" class="btn btn-sm btn-outline-light mt-auto">Подробнее</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        <span class="step-links">
+            <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page=1" style="background-color: #2d2d2d; border-color: #444; color: #bb86fc;">&laquo; первая</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}" style="background-color: #2d2d2d; border-color: #444; color: #bb86fc;">предыдущая</a></li>
+            {% endif %}
+
+            <li class="page-item active" aria-current="page">
+                <span class="page-link" style="background-color: #bb86fc; border-color: #bb86fc; color: #121212;">
+                    Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}" style="background-color: #2d2d2d; border-color: #444; color: #bb86fc;">следующая</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" style="background-color: #2d2d2d; border-color: #444; color: #bb86fc;">последняя &raquo;</a></li>
+            {% endif %}
+            </ul>
+        </span>
+    </div>
+    {% else %}
+        <p class="text-center">Нет фильмов для отображения.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,5 +1,6 @@
 import uuid
 from typing import Dict
+from datetime import datetime # Импортируем datetime
 
 import pandas as pd
 from sqlalchemy import select
@@ -24,6 +25,9 @@ def get_or_create_entity(
         )
         entity = result.scalars().first()
         if not entity:
+            # Ensure created_at and updated_at are set if the model has them
+            create_data.setdefault('created_at', datetime.now())
+            create_data.setdefault('updated_at', datetime.now())
             entity = model(**create_data)
             session.add(entity)
             session.flush()  # Ensure we get the ID if needed
@@ -45,16 +49,22 @@ def import_from_excel(file_path: str):
         with session.begin():
             for _, row in df.iterrows():
                 # Create Movie
+                # id будет установлен базой данных или SQLAlchemy по умолчанию
+                # created_at и updated_at устанавливаем явно, чтобы избежать NotNullViolation
                 movie = Movie(
-                    id=uuid.uuid4(),
-                    title_ru=row['Название (русское)']
+                    title_ru=row['Название (русское)'],
+                    created_at=datetime.now(), 
+                    updated_at=datetime.now()
                 )
                 session.add(movie)
-
+                session.flush() # Чтобы получить movie.id для связанных объектов
                 # Create Rating
                 rating = MovieRating(
+                    # id будет установлен базой данных или SQLAlchemy по умолчанию
                     movie_id=movie.id,
-                    rating=float(row['Рейтинг'])
+                    rating=float(row['Рейтинг']),
+                    created_at=datetime.now(), 
+                    updated_at=datetime.now()
                 )
                 session.add(rating)
 
@@ -66,8 +76,8 @@ def import_from_excel(file_path: str):
                         model=Genre,
                         filter_field='genre_name',
                         filter_value=genre_name,
-                        create_data={
-                            'id': uuid.uuid4(),
+                        create_data={ # id, created_at, updated_at будут установлены по server_default
+                            # 'id': uuid.uuid4(), # Убираем явное создание id
                             'genre_name': genre_name
                         },
                         existing_cache=existing_entities['genres']
@@ -82,8 +92,8 @@ def import_from_excel(file_path: str):
                         model=Actor,
                         filter_field='full_name',
                         filter_value=actor_name,
-                        create_data={
-                            'id': uuid.uuid4(),
+                        create_data={ # id, created_at, updated_at будут установлены по server_default
+                            # 'id': uuid.uuid4(), # Убираем явное создание id
                             'full_name': actor_name
                         },
                         existing_cache=existing_entities['actors']

@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Выход{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+  <div class="p-4 rounded mx-auto" style="background-color: #1e1e1e; border: 1px solid #2d2d2d; max-width: 500px;">
+    <h2 class="mb-3">Выход</h2>
+    <p class="lead">Вы успешно вышли из системы.</p>
+    <hr class="my-4" style="border-color: #444;">
+    <a href="{% url 'login' %}" class="btn btn-primary-custom me-2">Войти снова</a>
+    <a href="{% url 'movie_list' %}" class="btn btn-outline-light">Перейти на главную</a>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}

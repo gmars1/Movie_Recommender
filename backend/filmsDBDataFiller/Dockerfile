@@ -14,8 +14,9 @@ COPY pyproject.toml .
 RUN pip install -e .
 RUN pip install --no-cache-dir -r backend/filmsDBDataFiller/requirements.txt
 RUN pip install --no-cache-dir -r FilmsDatabase/requirements.txt
+ 
+COPY ./backend/filmsDBDataFiller/run_seeder.sh /app/run_seeder.sh
+RUN chmod +x /app/run_seeder.sh # Исправлен путь для chmod
 
-CMD ["python", "backend/filmsDBDataFiller/main_import.py"]
-CMD ["python", "backend/filmsDBDataFiller/db_film_filler.py"]
-
-
+# Эта команда будет выполнена при запуске контейнера
+CMD ["/app/run_seeder.sh"]
