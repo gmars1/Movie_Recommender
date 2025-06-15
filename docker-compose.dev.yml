@@ -7,3 +7,6 @@ services:
     volumes:
       - ./:/app/host
     tty: true        # Allocate a pseudo-TTY
+  backend:
+    volumes:
+      - ./backend:/app # Для live-reload кода Django в разработке

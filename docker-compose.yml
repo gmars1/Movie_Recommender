@@ -24,8 +24,6 @@ services:
       context: .
       dockerfile: ./backend/Dockerfile # Используем новый Dockerfile для Django
     command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - ./backend:/app # Для live-reload кода Django в разработке
     ports:
       - "8000:8000" # Проброс порта Django
     environment:
@@ -39,6 +37,8 @@ services:
       movie_db: # Зависит от готовности БД
         condition: service_healthy
       movie_db_migrator: # Должен ждать выполнения Django миграций
+        condition: service_completed_successfully
+      movie_db_seed: # todo Должен ждать seed?
         condition: service_completed_successfully
     networks:
       - film_network
@@ -73,7 +73,7 @@ services:
       DB_FILMS_PORT: ${DB_FILMS_CONTAINER_PORT}
     depends_on:
       movie_db_migrator: # Сидер должен ждать, пока Django применит миграции
-        condition: service_completed_successfully
+        condition: service_started
     networks:
       - film_network
 
