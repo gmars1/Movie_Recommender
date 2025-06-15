@@ -2,7 +2,9 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.metrics.pairwise import cosine_similarity
-from backend.films.models import Movie
+
+from django.apps import apps
+Movie = apps.get_model('films', 'Movie')
 
 class MovieRecommender:
     def __init__(self, xlsx_path='backend/filmsDBDataFiller/top_250.xlsx'):
