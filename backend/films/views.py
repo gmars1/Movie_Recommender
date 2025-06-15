@@ -6,7 +6,7 @@ from django.shortcuts import redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.db.models import Avg, F, Count
 from django.db.models.functions import Round
-
+from recommender_service.recommender import recommender
 
 def movie_list(request):
     # Аннотируем и сортируем: сначала по убыванию средней оценки (NULLS LAST), потом по названию
@@ -56,14 +56,19 @@ def movie_detail(request, movie_id):
         form = RateMovieForm(initial=initial_data)
 
     # Получение похожих фильмов
-    similar_movies = []
-    if movie.genres.exists(): # Проверяем, есть ли у фильма жанры
-        movie_genre_ids = movie.genres.values_list('id', flat=True)
-        similar_movies = Movie.objects.filter(genres__id__in=movie_genre_ids) \
-                                      .exclude(id=movie.id) \
-                                      .annotate(common_genres_count=Count('genres')) \
-                                      .order_by('-common_genres_count', '-rating__rating')[:5] # Показываем до 5 похожих фильмов
-    
+
+    # old
+    # similar_movies = []
+    # if movie.genres.exists(): # Проверяем, есть ли у фильма жанры
+    #     movie_genre_ids = movie.genres.values_list('id', flat=True)
+    #     similar_movies = Movie.objects.filter(genres__id__in=movie_genre_ids) \
+    #                                   .exclude(id=movie.id) \
+    #                                   .annotate(common_genres_count=Count('genres')) \
+    #                                   .order_by('-common_genres_count', '-rating__rating')[:5] # Показываем до 5 похожих фильмов
+
+    # new
+    similar_movies = recommender.recommend(movie.title_ru, top_n=5)
+
     context = {
         'movie': movie, 
         'rate_form': form, 
