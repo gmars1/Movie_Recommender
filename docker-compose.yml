@@ -23,7 +23,7 @@ services:
     build:
       context: .
       dockerfile: ./backend/Dockerfile # Используем новый Dockerfile для Django
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python backend/manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000" # Проброс порта Django
     environment:
@@ -47,7 +47,7 @@ services:
     build:
       context: .
       dockerfile: ./backend/Dockerfile      # СТАЛО: используется Dockerfile от Django
-    command: python manage.py migrate         # СТАЛО: команда для Django миграций
+    command: python backend/manage.py migrate         # СТАЛО: команда для Django миграций
     environment:
       DB_FILMS_USER: ${DB_FILMS_USER}
       DB_FILMS_PASSWORD: ${DB_FILMS_PASSWORD}
