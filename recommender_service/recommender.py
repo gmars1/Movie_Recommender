@@ -41,10 +41,12 @@ class MovieRecommender:
         similar_indices = final_score.argsort()[-top_n:][::-1]
         return self.movies.iloc[similar_indices]['Название (русское)'].tolist()
 
-if __name__ == "__main__":
-    recommender = MovieRecommender()
-    test_title = "Бойцовский клуб"  # Подставь реальное название из твоего файла
-    recommendations = recommender.recommend(test_title, top_n=5)
-    print(f"Рекомендации для '{test_title}':")
-    for title in recommendations:
-        print(title)
+recommender = MovieRecommender()
+
+# if __name__ == "__main__":
+#     recommender = MovieRecommender()
+#     test_title = "Бойцовский клуб"  # Подставь реальное название из твоего файла
+#     recommendations = recommender.recommend(test_title, top_n=5)
+#     print(f"Рекомендации для '{test_title}':")
+#     for title in recommendations:
+#         print(title)
