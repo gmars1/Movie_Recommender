@@ -24,8 +24,6 @@ services:
       context: .
       dockerfile: ./backend/Dockerfile # Используем новый Dockerfile для Django
     command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - ./backend:/app # Для live-reload кода Django в разработке
     ports:
       - "8000:8000" # Проброс порта Django
     environment:
