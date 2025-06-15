@@ -40,6 +40,8 @@ services:
         condition: service_healthy
       movie_db_migrator: # Должен ждать выполнения Django миграций
         condition: service_completed_successfully
+      movie_db_seed: # todo Должен ждать seed?
+        condition: service_completed_successfully
     networks:
       - film_network
   
@@ -73,7 +75,7 @@ services:
       DB_FILMS_PORT: ${DB_FILMS_CONTAINER_PORT}
     depends_on:
       movie_db_migrator: # Сидер должен ждать, пока Django применит миграции
-        condition: service_completed_successfully
+        condition: service_started
     networks:
       - film_network
 

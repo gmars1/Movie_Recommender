@@ -19,4 +19,7 @@ COPY ./backend/filmsDBDataFiller/run_seeder.sh /app/run_seeder.sh
 RUN chmod +x /app/run_seeder.sh # Исправлен путь для chmod
 
 # Эта команда будет выполнена при запуске контейнера
-CMD ["/app/run_seeder.sh"]
+CMD ["sh", "-c", "echo 'Starting seeder...' && \
+     if [ -f /app/run_seeder.sh ]; then \
+         /app/run_seeder.sh; \
+     fi"]
