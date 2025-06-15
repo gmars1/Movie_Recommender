@@ -3,6 +3,9 @@ import numpy as np
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.metrics.pairwise import cosine_similarity
 
+from django.apps import apps
+Movie = apps.get_model('films', 'Movie')
+
 class MovieRecommender:
     def __init__(self, xlsx_path='backend/filmsDBDataFiller/top_250.xlsx'):
         self.movies = pd.read_excel(xlsx_path)
@@ -38,13 +41,45 @@ class MovieRecommender:
         # Итоговый скор: жанры 0.6, актёры 0.3, рейтинг 0.1
         final_score = 0.6 * genre_sim + 0.3 * actors_sim + 0.1 * ratings_norm
         final_score[idx] = -1  # исключаем сам фильм
-        similar_indices = final_score.argsort()[-top_n:][::-1]
-        return self.movies.iloc[similar_indices]['Название (русское)'].tolist()
 
-if __name__ == "__main__":
-    recommender = MovieRecommender()
-    test_title = "Бойцовский клуб"  # Подставь реальное название из твоего файла
-    recommendations = recommender.recommend(test_title, top_n=5)
-    print(f"Рекомендации для '{test_title}':")
-    for title in recommendations:
-        print(title)
+        similar_indices = final_score.argsort()[-top_n:][::-1]
+
+        max_attempts = top_n * 3  # Максимальное количество попыток
+        recommended_movies = []
+        attempts = 0
+
+        # 6. Итеративно ищем фильмы в базе Django
+        for i in similar_indices:
+            attempts += 1
+
+            # Прерываем если нашли достаточно или исчерпали попытки
+            if len(recommended_movies) >= top_n or attempts > max_attempts:
+                break
+
+            movie_title = self.movies.iloc[i]['Название (русское)']
+
+            try:
+                # Пытаемся найти точное совпадение
+                movie = Movie.objects.get(title_ru__iexact=movie_title)
+                recommended_movies.append(movie)
+
+            except Movie.DoesNotExist:
+                continue
+
+            except Movie.MultipleObjectsReturned:
+                # Если есть дубликаты - берем первый
+                movie = Movie.objects.filter(title_ru__iexact=movie_title).first()
+                recommended_movies.append(movie)
+
+        # 7. Возвращаем результат (ровно top_n элементов)
+        return recommended_movies[:top_n]
+
+recommender = MovieRecommender()
+
+# if __name__ == "__main__":
+#     recommender = MovieRecommender()
+#     test_title = "Бойцовский клуб"  # Подставь реальное название из твоего файла
+#     recommendations = recommender.recommend(test_title, top_n=5)
+#     print(f"Рекомендации для '{test_title}':")
+#     for title in recommendations:
+#         print(title)
